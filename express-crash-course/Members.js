@@ -2,17 +2,17 @@ const members = [
     {
         id: 1,
         name: "John Doe",
-        age: 40
+        email: "john@gmail.com"
     },
     {
-        id: 1,
+        id: 2,
         name: "Sarah Conner",
-        age: 20
+        email: "sarah@gmail.com"
     },
     {
-        id: 1,
+        id: 3,
         name: "John Wick",
-        age: 44
+        email: "john@gmail.com"
     }
 ]
 
