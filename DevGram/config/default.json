@@ -1,0 +1,6 @@
+{
+    "MongoURI": "mongodb+srv://aashar:aashar123@devgram.e45uq.mongodb.net/?retryWrites=true&w=majority",
+    "JWTSecret": "IdhSecretAan",
+    "githubClientId":"59b8533a542569246857",
+    "githubSecret":"cf3ef194b6d62b5b5ade607261dc6b7d9b62ebc8"
+}
