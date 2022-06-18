@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { login } from '../../actions/auth';
+import PropTypes from 'prop-types';
 
-const Login = () => {
+const Login = ({ login }) => {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -9,14 +12,14 @@ const Login = () => {
 
   const { email, password } = formData;
 
-  const onChange = e =>{
-    setFormData( {...formData, [e.target.name]: e.target.value })
-  }
+  const onChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
-  const onSubmit = e =>{
+  const onSubmit = (e) => {
     e.preventDefault();
-    console.log("Logged In")
-  }
+    login(email, password);
+  };
 
   return (
     <div>
@@ -24,7 +27,7 @@ const Login = () => {
       <p className='lead'>
         <i className='fas fa-user'></i> Sign In To Your Account
       </p>
-      <form className='form' onSubmit={e => onSubmit(e)}>
+      <form className='form' onSubmit={(e) => onSubmit(e)}>
         <div className='form-group'>
           <input
             type='email'
@@ -46,7 +49,7 @@ const Login = () => {
             required
           />
         </div>
-        <input type='submit' className='btn btn-primary' value='Register' />
+        <input type='submit' className='btn btn-primary' value='Sign In' />
       </form>
       <p className='my-1'>
         Don't have an account? <Link to='/register'>Sign Up</Link>
@@ -55,4 +58,8 @@ const Login = () => {
   );
 };
 
-export default Login;
+Login.propTypes = {
+  login: PropTypes.func.isRequired,
+};
+
+export default connect(null, { login })(Login);
