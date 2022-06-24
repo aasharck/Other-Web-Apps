@@ -4,6 +4,7 @@ const config = require('config');
 const router = express.Router();
 const User = require('../../models/User');
 const Profile = require('../../models/Profile');
+const Post = require('../../models/Post');
 const auth = require('../../middleware/auth');
 const { body, validationResult } = require('express-validator');
 
@@ -132,8 +133,11 @@ router.get('/user/:user_id', async (req, res) => {
 
 router.delete('/', auth, async (req, res) => {
   try {
-    await Profile.findOneAndDelete({ user: req.user.id });
-    await User.findOneAndDelete({ _id: req.user.id });
+    await Promise.all([
+      Post.deleteMany({ user: req.user.id }),
+      Profile.findOneAndRemove({ user: req.user.id }),
+      User.findOneAndRemove({ _id: req.user.id })
+    ]);
     res.json({ msg: 'User Deleted' });
   } catch (err) {
     console.log(err);
@@ -182,10 +186,10 @@ router.delete('/experience/:exp_id', auth, async (req, res) => {
   try {
     const profile = await Profile.findOne({ user: req.user.id });
 
-    const expIndex = profile.experience
-      .map((item) => item.id)
-      .indexOf(req.params.exp_id);
-    profile.experience.splice(expIndex);
+    profile.experience = profile.experience.filter(
+      (exp) => exp._id.toString() !== req.params.exp_id
+    );
+
     await profile.save();
     res.json(profile);
   } catch (err) {
@@ -243,10 +247,9 @@ router.delete('/education/:edu_id', auth, async (req, res) => {
   try {
     const profile = await Profile.findOne({ user: req.user.id });
 
-    const expIndex = profile.education
-      .map((item) => item.id)
-      .indexOf(req.params.edu_id);
-    profile.education.splice(expIndex);
+    profile.education = profile.education.filter(
+      (edu) => edu._id.toString() !== req.params.edu_id
+    );
     await profile.save();
     res.json(profile);
   } catch (err) {

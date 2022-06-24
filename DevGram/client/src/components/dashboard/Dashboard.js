@@ -1,27 +1,57 @@
 import React, { Fragment, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { getCurrentProfile } from '../../actions/profile';
+import { deleteProfile, getCurrentProfile } from '../../actions/profile';
 import Spinner from '../layout/Spinner';
 import { Link } from 'react-router-dom';
+import { DashboardActions } from './DashboardActions';
+import Experience from './Experience';
+import Education from './Education';
 
-const Dashboard = ({ getCurrentProfile, auth:{user}, profile:{profile, loading} }) => {
+const Dashboard = ({
+  getCurrentProfile,
+  auth: { user },
+  profile: { profile, loading },
+}) => {
   useEffect(() => {
     getCurrentProfile();
   }, [getCurrentProfile]);
 
-  return loading && profile===null ? <Spinner /> : (
+  return loading && profile === null ? (
+    <Spinner />
+  ) : (
     <Fragment>
-       <h1 className="large text-primary">Dashboard</h1>
-      <p className="lead">
-        <i className="fas fa-user" /> Welcome {user && user.name}
+      <h1 className='large text-primary'>Dashboard</h1>
+      <p className='lead'>
+        <i className='fas fa-user' /> Welcome {user && user.name}
       </p>
-      {profile !== null ? <Fragment>Profile found</Fragment>:<Fragment>
-        <p className='lead'>You have not yet created a Profile. Create one now!</p>
-        <Link to='/create-profile' className='btn btn-primary'>Create Profile</Link>
-        </Fragment>} 
+      {profile !== null ? (
+        <Fragment>
+          <DashboardActions />
+          <Experience experience={profile.experience} />
+          <Education education={profile.education} />
+
+          <button
+            className='btn btn-danger'
+            onClick={() => {
+              deleteProfile();
+            }}
+          >
+            DELETE ACCOUNT!
+          </button>
+        </Fragment>
+      ) : (
+        <Fragment>
+          <p className='lead'>
+            You have not yet created a Profile. Create one now!
+          </p>
+          <Link to='/create-profile' className='btn btn-primary'>
+            Create Profile
+          </Link>
+        </Fragment>
+      )}
     </Fragment>
-  )
+  );
 };
 
 Dashboard.propTypes = {
